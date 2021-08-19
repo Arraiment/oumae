@@ -1,6 +1,6 @@
-import { Component, createEffect, Show, Index, createSignal } from "solid-js";
-import { Anime, AnimeDetails, fetchMalScore, fetchSuggestions } from "../queries";
-import { Provider, useStore } from "../store";
+import { Component, createEffect, Show, createSignal } from "solid-js";
+import { Anime, AnimeDetails, fetchMalScore } from "../utils/queries";
+import { useStore } from "../utils/store";
 
 const Details: Component = () => {
   const [store, { searchFor, toggleLoading }] = useStore()

@@ -1,8 +1,8 @@
 import { render } from "solid-js/web";
 
-import "./index.css";
+import "./resources/index.css";
 import App from "./App";
-import { Provider } from "./store";
+import { Provider } from "./utils/store";
 
 render(() =>
     <Provider>

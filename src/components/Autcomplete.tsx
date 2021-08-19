@@ -1,6 +1,6 @@
 import { Component, createEffect, Show, Index, createSignal } from "solid-js";
-import { Anime, fetchSuggestions } from "../queries";
-import { Provider, useStore } from "../store";
+import { Anime, fetchSuggestions } from "../utils/queries";
+import { useStore } from "../utils/store";
 
 const Autocomplete: Component = () => {
   const [store, { searchFor, toggleLoading, setAnime }] = useStore()

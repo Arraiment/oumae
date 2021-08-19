@@ -1,7 +1,7 @@
 import { Component, Show } from "solid-js";
 import Autocomplete from "./components/Autcomplete";
 import Details from "./components/Details";
-import { Provider, useStore } from "./store";
+import { useStore } from "./utils/store";
 
 const App: Component = () => {
   const [store, { searchFor, toggleLoading }] = useStore()
