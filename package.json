@@ -1,7 +1,7 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
+  "name": "oumae",
+  "version": "0.1.0",
+  "description": "Finds out what the internet thinks of your anime",
   "scripts": {
     "start": "vite",
     "dev": "vite",
