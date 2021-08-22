@@ -1,7 +1,7 @@
 {
   "name": "oumae",
   "version": "0.1.0",
-  "description": "Finds out what the internet thinks of your anime",
+  "description": "Finds out what the internet thinks of the anime you want to watch",
   "scripts": {
     "start": "vite",
     "dev": "vite",

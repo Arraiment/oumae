@@ -16,8 +16,6 @@ const Autocomplete: Component = () => {
   })
 
   const handleClick = ({ currentTarget }) => {
-    console.log(currentTarget.textContent)
-    console.log(currentTarget.id)
     toggleLoading(true)
     setAnime(new Anime(
       currentTarget.id,
@@ -28,7 +26,7 @@ const Autocomplete: Component = () => {
   return (
     <div>
       <Show when={!store.loading} fallback={() => <p>{store.query}</p>}>
-        <Index each={results()}>{(result, i) =>
+        <Index each={results()}>{result =>
           <button onClick={handleClick} id={result().id.toString()}>{result().title}</button>
         }</Index>
       </Show>

@@ -8,7 +8,7 @@ const App: Component = () => {
   const handleSearch = ({ currentTarget }) => {
     const query = currentTarget.value.trim()
     if (query) {
-      searchFor(query) 
+      searchFor(query)
       toggleLoading(true)
     }
   }

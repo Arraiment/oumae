@@ -30,12 +30,15 @@ export function Provider(props) {
       state,
       {
         searchFor(query: string) {
-          setState("query", query);
+          console.log(`Query received: ${query}`)
+          setState("query", query)
         },
         toggleLoading(state: boolean) {
+          state ? console.log('Now loading') : console.log('Loading done')
           setState("loading", state)
         },
         setAnime(anime: Anime) {
+          console.log(`Set anime: <${anime.title}>`)
           setState("anime", anime)
         }
       }
