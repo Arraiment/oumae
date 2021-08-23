@@ -14,7 +14,16 @@ type JikanResponse = {
 }
 
 type AnilistResponse = {
-
+  data: {
+    Media: {
+      url: string,
+      title: {
+        english: string
+      },
+      score: number,
+      scored_by: number
+    }
+  }
 }
 
 const fetchJson = async (url: string, options?: RequestInit) => {
@@ -22,10 +31,12 @@ const fetchJson = async (url: string, options?: RequestInit) => {
   if (response.ok) {
     return response.json()
   } else {
-    console.error(`Request failed: ${response.status}`)
+    const error = await response.json()
+    throw `Request failed: ${JSON.stringify(error)}`
   }
 }
 
+// For use in Autocomplete component
 export const fetchSuggestions = async (query: string): Promise<Anime[]> => {
   try {
     const data = await fetchJson(`${JIKAN_URL}/search/anime?q=${query}&limit=5`)
@@ -37,8 +48,20 @@ export const fetchSuggestions = async (query: string): Promise<Anime[]> => {
   }
 }
 
+export const fetchDetails = async (anime: Anime) => {
+  const [details, malScore] = await fetchMalScore(anime.id)
+  const anilistScore = await fetchAnilistScore(anime.id)
+  return {
+    details: details,
+    scores: [
+      malScore,
+      anilistScore
+    ]
+  }
+}
+
 // Also fetches anime details
-export const fetchMalScore = async (id: string): Promise<[AnimeDetails, Score]> => {
+const fetchMalScore = async (id: string): Promise<[AnimeDetails, Score]> => {
   try {
     const data = await fetchJson(`${JIKAN_URL}/anime/${id}`) as JikanResponse
     const score = new Score(data.url, "MyAnimeList", data.score, data.scored_by)
@@ -50,27 +73,30 @@ export const fetchMalScore = async (id: string): Promise<[AnimeDetails, Score]> 
   }
 }
 
-export const fetchAnilistScore = async (id: string) => {
-  try {
-    const query = `
-      query {
-        Media (idMal: ${id}, type: ANIME) {
-          id
-          title {
-            english
-          }
-          averageScore
-        }
+const fetchAnilistScore = async (id: string) => {
+  const query = `{
+    Media (idMal: ${id}, type: ANIME) {
+      url: siteUrl
+      title {
+        english
       }
-    `
+      score: averageScore
+      scored_by: popularity
+    }
+  }`
+  try {
     const response = await fetchJson(`${ANILIST_URL}`, {
       method: 'POST',
-      body: query
-    })
-    const data = response.data['data']['Media']
-    const score = new Score(data['url'], "AniList", data['score'], data['scored_by'])
-    console.log(score)
-    return score
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        query: query
+      })
+    }) as AnilistResponse
+    const data = response.data.Media
+    return new Score(data.url, "AniList", data.score, data.scored_by) 
   } catch (error) {
     throw `Error fetching results: ${error}`
   }

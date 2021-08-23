@@ -1,5 +1,5 @@
 import { Component, createEffect, createSignal, Show, For } from "solid-js";
-import { fetchMalScore } from "../utils/queries";
+import { fetchDetails } from "../utils/queries";
 import { AnimeDetails, Score } from "../utils/models"
 import { useStore } from "../utils/store";
 
@@ -17,16 +17,14 @@ const Details: Component = () => {
   createEffect(() => {
     if (store.anime !== null) {
       console.log(store.anime)
-      // Clear scores
-      setScores([])
 
-      fetchMalScore(store.anime['id']).then(results => {
-          setDetails(results[0])
-          setScores(scores => [...scores, results[1]])
-          toggleLoading(false)
-        }).catch(
-          error => console.log(error)
-        ).finally()
+      fetchDetails(store.anime).then(results => {
+        setDetails(results.details)
+        setScores(results.scores)
+        toggleLoading(false)
+      }).catch(
+        error => console.log(error)
+      ).finally()
     }
   })
 
