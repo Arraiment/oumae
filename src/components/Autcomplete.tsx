@@ -6,7 +6,10 @@ import { useStore } from "../utils/store";
 const Autocomplete: Component = () => {
   const [store, { toggleLoading, setAnime }] = useStore()
   const [results, setResults] = createSignal<Anime[]>([])
+
   createEffect(() => {
+    console.log(store.query);
+    
     if (store.query) {
       fetchSuggestions(store.query)
       .then(results => {
@@ -17,7 +20,6 @@ const Autocomplete: Component = () => {
   })
 
   const handleClick = ({ currentTarget }) => {
-    toggleLoading(true)
     setAnime(new Anime(
       currentTarget.id,
       currentTarget.textContent

@@ -11,6 +11,10 @@ const Details: Component = () => {
   const [scores, setScores] = createSignal<Score[]>()
 
   createEffect(() => {
+    console.log(store.anime);
+  })
+
+  createEffect(() => {
     if (store.anime !== null) {
       console.log(store.anime)
       // Clear scores
@@ -22,21 +26,23 @@ const Details: Component = () => {
           toggleLoading(false)
         }).catch(
           error => console.log(error)
-        )
+        ).finally()
     }
   })
 
   return (
-    <Show when={!store.loading && store.anime !== null} fallback={() => <p>No anime selected</p>}>
-      <div class="details">
-        <h1>{details().title}</h1>
-        <h3>{details().type}</h3>
-        <h3>{details().episodes}</h3>
-      </div>
-      <For each={scores()}>{score =>
-        <ScoreDisplay score={score} />
-      }</For>
-    </Show>
+    <div>
+      <Show when={details()} fallback={() => <p>No anime selected</p>}>
+        <div class="details">
+          <h1>{details().title}</h1>
+          <h3>{details().type}</h3>
+          <h3>{details().episodes}</h3>
+        </div>
+        <For each={scores()}>{score =>
+          <ScoreDisplay score={score} />
+        }</For>
+      </Show>
+    </div>
   );
 };
 

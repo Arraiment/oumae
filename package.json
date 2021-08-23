@@ -14,8 +14,6 @@
     "vite-plugin-solid": "^2.0.1"
   },
   "dependencies": {
-    "axios": "^0.21.1",
-    "phin": "^3.6.0",
     "solid-js": "^1.0.7"
   }
 }

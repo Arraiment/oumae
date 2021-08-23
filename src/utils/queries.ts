@@ -1,37 +1,52 @@
-import axios from "axios"
 import { Anime, AnimeDetails, Score } from "./models"
 
 const JIKAN_URL = "https://api.jikan.moe/v3"
 const ANILIST_URL = "https://graphql.anilist.co"
 
-type JikanApiResponse = {
+type JikanResponse = {
   mal_id: number,
-  title: string
-}[]
+  url: string,
+  title: string,
+  type: string,
+  episodes: number
+  score: number,
+  scored_by: number
+}
 
-export const fetchSuggestions = async (query: string) => {
+type AnilistResponse = {
+
+}
+
+const fetchJson = async (url: string, options?: RequestInit) => {
+  const response = await fetch(url, options)
+  if (response.ok) {
+    return response.json()
+  } else {
+    console.error(`Request failed: ${response.status}`)
+  }
+}
+
+export const fetchSuggestions = async (query: string): Promise<Anime[]> => {
   try {
-    const response = await axios.get(`${JIKAN_URL}/search/anime?q=${query}&limit=5`)
-    const data = response.data['results'] as JikanApiResponse
-    return data.map(anime => {
+    const data = await fetchJson(`${JIKAN_URL}/search/anime?q=${query}&limit=5`)
+    return data['results'].map((anime: JikanResponse) => {
       return new Anime(anime.mal_id.toString(), anime.title)
     })
   } catch (error) {
-    console.error(`Error fetching results: ${error}`)
+    throw `Error fetching results: ${error}`
   }
 }
 
 // Also fetches anime details
 export const fetchMalScore = async (id: string): Promise<[AnimeDetails, Score]> => {
   try {
-    const response = await axios.get(`${JIKAN_URL}/anime/${id}`)
-    const data = response.data
-    const score = new Score(data['url'], "MyAnimeList", data['score'], data['scored_by'])
+    const data = await fetchJson(`${JIKAN_URL}/anime/${id}`) as JikanResponse
+    const score = new Score(data.url, "MyAnimeList", data.score, data.scored_by)
     console.log(score)
-    const details = new AnimeDetails(data['title'], data['type'], data['episodes'])
+    const details = new AnimeDetails(data.title, data.type, data.episodes)
     return [details, score]
   } catch (error) {
-    console.error(`Error fetching results: ${error}`)
+    throw `Error fetching results: ${error}`
   }
 }
 
@@ -41,18 +56,22 @@ export const fetchAnilistScore = async (id: string) => {
       query {
         Media (idMal: ${id}, type: ANIME) {
           id
-          title
+          title {
             english
+          }
           averageScore
         }
       }
     `
-    const response = await axios.post(`${ANILIST_URL}`, query)
+    const response = await fetchJson(`${ANILIST_URL}`, {
+      method: 'POST',
+      body: query
+    })
     const data = response.data['data']['Media']
     const score = new Score(data['url'], "AniList", data['score'], data['scored_by'])
     console.log(score)
     return score
   } catch (error) {
-    console.error(`Error fetching results: ${error}`)
+    throw `Error fetching results: ${error}`
   }
 }

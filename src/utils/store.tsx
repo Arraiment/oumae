@@ -6,10 +6,7 @@ type Store = [
   {
     query: string,
     loading: boolean,
-    anime?: {
-      id: string,
-      title: string
-    }
+    anime?: Anime
   },
   {
     searchFor?: (query: string) => void;
@@ -30,16 +27,16 @@ export function Provider(props) {
       state,
       {
         searchFor(query: string) {
-          console.log(`Query received: ${query}`)
           setState("query", query)
+          console.log(`Query set: ${state.query}`);
         },
         toggleLoading(state: boolean) {
           state ? console.log('Now loading') : console.log('Loading done')
           setState("loading", state)
         },
         setAnime(anime: Anime) {
-          console.log(`Set anime: <${anime.title}>`)
           setState("anime", anime)
+          console.log(state.anime)
         }
       }
     ];

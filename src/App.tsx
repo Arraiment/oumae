@@ -1,11 +1,11 @@
-import { Component, Show } from "solid-js";
+import { Component, createSignal, Show } from "solid-js";
 import { useStore } from "./utils/store";
 
 import Autocomplete from "./components/Autcomplete";
 import Details from "./components/Details";
 
 const App: Component = () => {
-  const [store, { searchFor }] = useStore()
+  const [store, { searchFor, toggleLoading }] = useStore()
   const handleSearch = ({ currentTarget }) => {
     const query = currentTarget.value.trim()
     if (query) {

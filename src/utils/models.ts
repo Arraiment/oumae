@@ -12,7 +12,7 @@ export class AnimeDetails {
   constructor(
     readonly title: string,
     readonly type: string,
-    readonly episodes: string
+    readonly episodes: number
   ){}
 }
 
