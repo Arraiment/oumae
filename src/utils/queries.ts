@@ -1,34 +1,8 @@
 import axios from "axios"
+import { Anime, AnimeDetails, Score } from "./models"
 
 const JIKAN_URL = "https://api.jikan.moe/v3"
 const ANILIST_URL = "https://graphql.anilist.co"
-
-export class Anime {
-  id: string
-  title: string
-
-  constructor (id: string, title: string) {
-    this.id = id
-    this.title = title
-  }
-}
-
-export class AnimeDetails {
-  constructor(
-    readonly title: string,
-    readonly type: string,
-    readonly episodes: string
-  ){}
-}
-
-export class Score {
-  constructor(
-    readonly url: string,
-    readonly source: string,
-    readonly value: number,
-    readonly numScored?: number
-  ){}
-}
 
 type JikanApiResponse = {
   mal_id: number,

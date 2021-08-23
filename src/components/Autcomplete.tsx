@@ -1,9 +1,10 @@
 import { Component, createEffect, Show, Index, createSignal } from "solid-js";
-import { Anime, fetchSuggestions } from "../utils/queries";
+import { fetchSuggestions } from "../utils/queries";
+import { Anime } from "../utils/models";
 import { useStore } from "../utils/store";
 
 const Autocomplete: Component = () => {
-  const [store, { searchFor, toggleLoading, setAnime }] = useStore()
+  const [store, { toggleLoading, setAnime }] = useStore()
   const [results, setResults] = createSignal<Anime[]>([])
   createEffect(() => {
     if (store.query) {

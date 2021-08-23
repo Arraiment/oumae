@@ -1,5 +1,5 @@
 import { Component, Show } from "solid-js";
-import { Score } from "../utils/queries";
+import { Score } from "../utils/models";
 
 const ScoreDisplay: Component<{ score: Score }> = (props: { score: Score }) => {
   return (

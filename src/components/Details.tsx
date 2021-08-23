@@ -1,6 +1,8 @@
 import { Component, createEffect, createSignal, Show, For } from "solid-js";
-import { AnimeDetails, fetchMalScore, Score } from "../utils/queries";
+import { fetchMalScore } from "../utils/queries";
+import { AnimeDetails, Score } from "../utils/models"
 import { useStore } from "../utils/store";
+
 import ScoreDisplay from "./ScoreDisplay";
 
 const Details: Component = () => {

@@ -1,6 +1,6 @@
 import { createContext, useContext } from "solid-js";
 import { createStore } from "solid-js/store"
-import { Anime } from "./queries";
+import { Anime } from "./models";
 
 type Store = [
   {
