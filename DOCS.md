@@ -1,23 +1,22 @@
 ## App flow documentation
 
-### Init
-App is first mounted on index.html via index.tsx
-The main app component is wrapped in a provider, which provides a store context to the entire app. This allows us to manage the global state.
-
 ### App
 This component handles when to display each child/section based on the fetch status. It also contains and handles logic for search input functionality.
 
 ### Search
 The flow is as follows:
-1. Reads user input after a slight delay
-2. Updates signal after input verification
-3. Clears state on user command (Unimplemented)
+1. When user input is detected, `loading` state is set to `true`
+2. Reads user input after a slight delay to allow user to finish typing
+3. Updates `query` state after checking input is a valid query
+4. Clears state on user command (Unimplemented)
 
 ### Autocomplete
 This section is responsible for displaying suggested anime titles based on the user's input.
-1. When the signal for user input is updated, component re-renders
-2. Sets loading state to `true` and calls Jikan's API
-3. Updates internal state with API response to render 5 suggestions
+1. When the `query` signal is updated, `createEffect` watcher calls `fetchSuggestions` 
+2. Calls Jikan's API
+   - If request is successful, updates `results`
+   - If request timeout or is unsuccessful, sets `error` state to `true`
+3. Sets `loading` to `false`, thus rendering suggestions
 
 ### Details
 This component accepts a prop of the `Anime` class, using the info provided to fetch scores for the anime from a variety of sources.

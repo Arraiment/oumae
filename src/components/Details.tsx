@@ -22,7 +22,7 @@ const Details: Component<{anime: Anime}> = (props) => {
   })
 
   return (
-    <div>
+    <div id="details-component">
       <Show when={details()} fallback={() => <p>Loading...</p>}>
         <div class="details">
           <h1>{details().title}</h1>
