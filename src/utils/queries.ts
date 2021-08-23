@@ -38,13 +38,14 @@ const fetchJson = async (url: string, options?: RequestInit) => {
 
 // For use in Autocomplete component
 export const fetchSuggestions = async (query: string): Promise<Anime[]> => {
+  console.log("Fetching suggestions");
   try {
     const data = await fetchJson(`${JIKAN_URL}/search/anime?q=${query}&limit=5`)
     return data['results'].map((anime: JikanResponse) => {
       return new Anime(anime.mal_id.toString(), anime.title)
     })
   } catch (error) {
-    throw `Error fetching results: ${error}`
+    throw error
   }
 }
 
