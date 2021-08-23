@@ -64,8 +64,7 @@ export const fetchDetails = async (anime: Anime) => {
 const fetchMalScore = async (id: string): Promise<[AnimeDetails, Score]> => {
   try {
     const data = await fetchJson(`${JIKAN_URL}/anime/${id}`) as JikanResponse
-    const score = new Score(data.url, "MyAnimeList", data.score, data.scored_by)
-    console.log(score)
+    const score = new Score(data.url, "MyAnimeList", data.score * 10, data.scored_by)
     const details = new AnimeDetails(data.title, data.type, data.episodes)
     return [details, score]
   } catch (error) {

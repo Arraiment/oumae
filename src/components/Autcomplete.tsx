@@ -7,10 +7,12 @@ const Autocomplete: Component = () => {
   const [store, { toggleLoading, setAnime }] = useStore()
   const [results, setResults] = createSignal<Anime[]>([])
 
-  createEffect(() => {
-    console.log(store.query);
-    
-    if (store.query) {
+  let query: string
+
+  createEffect(() => {    
+    if (store.query && query != store.query) {
+      query = store.query
+
       fetchSuggestions(store.query)
       .then(results => {
         setResults(results)
