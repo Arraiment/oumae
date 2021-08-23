@@ -63,6 +63,7 @@ export const fetchSuggestions = async (query: string): Promise<Anime[]> => {
 }
 
 export const fetchDetails = async (anime: Anime) => {
+  console.log(`Fetching details for ${anime.title}`);
   const [details, malScore] = await fetchMalScore(anime.id)
   const anilistScore = await fetchAnilistScore(anime.id)
   return {

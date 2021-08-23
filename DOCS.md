@@ -19,12 +19,11 @@ This section is responsible for displaying suggested anime titles based on the u
 3. Sets `loading` to `false`, thus rendering suggestions
 
 ### Details
-This component accepts a prop of the `Anime` class, using the info provided to fetch scores for the anime from a variety of sources.
-1. Observes `props.anime` for changes
-2. When change occurs, wipes internal state and calls APIs
-3. Re-populates state with new info and re-renders component
+This component accepts a instance of the `Anime` class as a prop, using the info provided to fetch scores for the anime from a variety of sources.
+1. When the `props.anime` signal is updated, `createEffect` watcher calls `fetchDetails` 
+2. Calls APIs or scrapes websites, req/res follows the same flow as Autocomplete
 
 ### Development notes
 These are things I feel the need to comment on during the development process:
 - This is a frontend framework, backend http request libraries are either suboptimal (axios) or non-functional (phin), prefer native Fetch Api
-- Solid's `store` and `createResource` features are wonky and produce unexpected results, such as losing all functionality after an error is encountered instead of recovering on the next change. I'll aim to phase these out and manually implement functionality.
+- Solid's `useContext` and `createResource` features are wonky and produce unexpected results, such as losing all functionality after an error is encountered instead of recovering on the next change. I'll aim to phase these out and manually implement desired functionality.

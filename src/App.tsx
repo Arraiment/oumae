@@ -1,19 +1,26 @@
-import { Component, createResource, createSignal, Show, Index, createEffect } from "solid-js";
+import { Component, createSignal, Show, Index, createEffect } from "solid-js";
 import { createStore } from "solid-js/store"
 
 import { Anime } from "./utils/models";
 import { fetchSuggestions } from "./utils/queries";
 
 import Details from "./components/Details";
-import { setAttribute } from "solid-js/web";
 
+type Store = {
+  loading: boolean
+  error: boolean
+  query: string
+  results: Anime[]
+  selected: Anime
+}
 
 const App: Component = () => {
-  const [state, setState] = createStore({
+  const [state, setState] = createStore<Store>({
     loading: false,
     error: false,
     query: '',
-    results: []
+    results: [],
+    selected: null
   })
 
   createEffect(() => {
@@ -26,8 +33,6 @@ const App: Component = () => {
         .finally(() => setState("loading", false))
     }
   })
-
-  const [selected, setSelected] = createSignal<Anime>()
 
   let timer: number
   const handleSearch = ({ currentTarget }) => {
@@ -47,7 +52,7 @@ const App: Component = () => {
   }
 
   const selectAnime = ({ currentTarget }) => {
-    setSelected(
+    setState("selected",
       new Anime(currentTarget.id, currentTarget.textContent)
     )
   }
@@ -71,9 +76,9 @@ const App: Component = () => {
       </div>
       
       {/* Details */}
-      <Show when={selected()}>
-        {<Details anime={selected()} />}
-      </Show>
+      <div id="details-container">
+        <Details anime={state.selected} />
+      </div>
     </>
   );
 };

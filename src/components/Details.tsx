@@ -1,38 +1,63 @@
-import { Component, createEffect, createSignal, Show, For } from "solid-js";
+import { Component, createEffect, For, Switch, Match } from "solid-js";
 import { fetchDetails } from "../utils/queries";
 import { Anime, AnimeDetails, Score } from "../utils/models";
 
 import ScoreDisplay from "./ScoreDisplay";
+import { createStore } from "solid-js/store";
 
-const Details: Component<{anime: Anime}> = (props) => {
-  const [details, setDetails] = createSignal<AnimeDetails>();
-  const [scores, setScores] = createSignal<Score[]>();
+type Store = {
+  loading: boolean
+  error: boolean
+  details: AnimeDetails
+  scores: Score[]
+}
+
+const Details: Component<{ anime: Anime }> = (props) => {
+  const [state, setState] = createStore<Store>({
+    loading: false,
+    error: false,
+    details: null,
+    scores: []
+  });
 
   createEffect(() => {
     if (props.anime) {
-      setDetails()
-      console.log(props.anime)
+      setState("loading", true)
       fetchDetails(props.anime).then(results => {
-        setDetails(results.details)
-        setScores(results.scores)
+        setState("details", results.details)
+        setState("scores", results.scores)
       })
-      .catch(error => console.log(error))
-      .finally()
+        .catch(() => {
+          setState({
+            details: null,
+            scores: [],
+            error: true
+          })
+        })
+        .finally(() => setState("loading", false))
     }
   })
 
   return (
-    <div id="details-component">
-      <Show when={details()} fallback={() => <p>Loading...</p>}>
-        <div class="details">
-          <h1>{details().title}</h1>
-          <h3>{details().type} | {details().episodes}</h3>
+    <Switch>
+      <Match when={state.error}>
+        <p>Error occured while fetching anime info, check the logs</p>
+      </Match>
+      <Match when={state.loading}>
+        <p>Loading...</p>
+      </Match>
+      <Match when={state.details && state.scores}>
+        <div id="details">
+          <h1>{state.details.title}</h1>
+          <h3>{state.details.type} | {state.details.episodes}</h3>
         </div>
-        <For each={scores()}>{score =>
-          <ScoreDisplay score={score} />
-        }</For>
-      </Show>
-    </div>
+        <div id="scores">
+          <For each={state.scores}>{score =>
+            <ScoreDisplay score={score} />
+          }</For>
+        </div>
+      </Match>
+    </Switch>
   );
 };
 
