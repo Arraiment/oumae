@@ -4,12 +4,13 @@ const JIKAN_URL = "https://api.jikan.moe/v3"
 const ANILIST_URL = "https://graphql.anilist.co"
 
 type JikanResponse = {
-  mal_id: number,
-  url: string,
-  title: string,
-  type: string,
+  mal_id: number
+  url: string
+  title: string
+  type: string
   episodes: number
-  score: number,
+  year: number
+  score: number
   scored_by: number
 }
 
@@ -27,25 +28,37 @@ type AnilistResponse = {
 }
 
 const fetchJson = async (url: string, options?: RequestInit) => {
-  const response = await fetch(url, options)
+  // Used to abort fetch on timeout
+  const controller = new AbortController();
+  const signal = controller.signal;
+
+  // Starts timer for 8s, if response is not received, abort request
+  const timeout = setTimeout(() => {
+    controller.abort();
+    console.error('[Fetch JSON] Request timed out');
+  }, 8000);
+  const response = await fetch(url, { ...options, signal: signal });
+  // Aborts timer once response is received
+  clearTimeout(timeout);
+
   if (response.ok) {
-    return response.json()
+    return response.json() as Object
   } else {
     const error = await response.json()
-    throw `Request failed: ${JSON.stringify(error)}`
+    throw `[Fetch JSON] Request failed: ${JSON.stringify(error)}`
   }
 }
 
 // For use in Autocomplete component
 export const fetchSuggestions = async (query: string): Promise<Anime[]> => {
-  console.log("Fetching suggestions");
+  console.log(`Fetching suggestions for ${query}`);
   try {
     const data = await fetchJson(`${JIKAN_URL}/search/anime?q=${query}&limit=5`)
     return data['results'].map((anime: JikanResponse) => {
       return new Anime(anime.mal_id.toString(), anime.title)
     })
   } catch (error) {
-    throw error
+    console.error(`[Fetch Suggestions] ${error}`)
   }
 }
 
@@ -69,7 +82,7 @@ const fetchMalScore = async (id: string): Promise<[AnimeDetails, Score]> => {
     const details = new AnimeDetails(data.title, data.type, data.episodes)
     return [details, score]
   } catch (error) {
-    throw `Error fetching results: ${error}`
+    throw `[MAL] ${error}`
   }
 }
 
@@ -91,13 +104,12 @@ const fetchAnilistScore = async (id: string) => {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({
-        query: query
-      })
+      body: JSON.stringify({ query: query })
     }) as AnilistResponse
     const data = response.data.Media
-    return new Score(data.url, "AniList", data.score, data.scored_by) 
+    return new Score(data.url, "AniList", data.score, data.scored_by)
   } catch (error) {
-    throw `Error fetching results: ${error}`
+    console.warn(`[AniList] ${error}`);
+    return new Score('', 'AniList', -1);
   }
 }

@@ -26,8 +26,7 @@ const Details: Component<{anime: Anime}> = (props) => {
       <Show when={details()} fallback={() => <p>Loading...</p>}>
         <div class="details">
           <h1>{details().title}</h1>
-          <h3>{details().type}</h3>
-          <h3>{details().episodes}</h3>
+          <h3>{details().type} | {details().episodes}</h3>
         </div>
         <For each={scores()}>{score =>
           <ScoreDisplay score={score} />

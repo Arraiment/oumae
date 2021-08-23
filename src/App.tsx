@@ -24,7 +24,6 @@ const App: Component = () => {
     timer = setTimeout(() => {
       if (input && input !== query() && input.length > 3) {
         setQuery(input)
-        console.log(query())
       }
     }, 1000);
   }
@@ -39,13 +38,15 @@ const App: Component = () => {
     <>
       <h1>Oumae</h1>
       <input type="text" onInput={(e) => handleSearch(e)} />
-      <span>{results.loading && "Loading..."}</span>
+      <p>{results.loading && "Loading..."}</p>
       <Show
         when={!results.error}
         fallback={() => <p>No anime matches name {query()}</p>}>
-        <Index each={results()}>{result =>
-          <button onClick={selectAnime} id={result().id.toString()}>{result().title}</button>
-        }</Index>
+        <div id="autocomplete-container">
+          <Index each={results()}>{result =>
+            <button onClick={selectAnime} id={result().id.toString()}>{result().title}</button>
+          }</Index>
+        </div>
       </Show>
       <Show when={selected()}>
         {<Details anime={selected()}/>}
