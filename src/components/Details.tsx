@@ -22,7 +22,7 @@ const Details: Component<{ anime: Anime }> = (props) => {
 
   createEffect(() => {
     if (props.anime) {
-      setState("loading", true)
+      setState({ loading: true, error: false })
       fetchDetails(props.anime).then(results => {
         setState("details", results.details)
         setState("scores", results.scores)

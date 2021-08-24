@@ -1,4 +1,4 @@
-import { Component, createSignal, Show, Index, createEffect } from "solid-js";
+import { Component, Index, Switch, Match, createEffect } from "solid-js";
 import { createStore } from "solid-js/store"
 
 import { Anime } from "./utils/models";
@@ -40,6 +40,7 @@ const App: Component = () => {
     if (!state.loading) {
       setState("loading", true)
     }
+    setState("error", false)
     const input = currentTarget.value.trim()
     // Stops previous setTimeout if it has not executed
     // Currently only sets query after user stops for 2 sec
@@ -65,16 +66,21 @@ const App: Component = () => {
 
       {/* Autocomplete */}
       <div id="autocomplete-container">
-        {state.loading
-          ? "Loading..."
-          : <Show when={!state.error}
-            fallback={() => <p>No anime matches name "{state.query}"</p>}>
+        <Switch>
+          <Match when={state.error}>
+            <p>No anime matches name "{state.query}"</p>
+          </Match>
+          <Match when={state.loading}>
+            <p>Loading...</p>
+          </Match>
+          <Match when={state.results}>
             <Index each={state.results}>{result =>
               <button onClick={selectAnime} id={result().id.toString()}>{result().title}</button>
             }</Index>
-          </Show>}
+          </Match>
+        </Switch>
       </div>
-      
+
       {/* Details */}
       <div id="details-container">
         <Details anime={state.selected} />
