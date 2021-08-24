@@ -1,7 +1,9 @@
 import { Anime, AnimeDetails, Score } from "./models"
+import stringSimilarity from 'string-similarity'
 
 const JIKAN_URL = "https://api.jikan.moe/v3"
 const ANILIST_URL = "https://graphql.anilist.co"
+const KITSU_URL = "https://kitsu.io/api/edge"
 
 type JikanResponse = {
   mal_id: number
@@ -27,6 +29,18 @@ type AnilistResponse = {
   }
 }
 
+type KitsuResponse = {
+  data: {
+    attributes: {
+      canonicalTitle: string
+      slug: string
+      averageRating?: string
+      userCount: number
+    }
+  }[]
+}
+
+// Default fetch implementation with timeout
 const fetchJson = async (url: string, options?: RequestInit) => {
   // Used to abort fetch on timeout
   const controller = new AbortController();
@@ -37,6 +51,7 @@ const fetchJson = async (url: string, options?: RequestInit) => {
     controller.abort();
     console.error('[Fetch JSON] Request timed out');
   }, 8000);
+  // Start request
   const response = await fetch(url, { ...options, signal: signal });
   // Aborts timer once response is received
   clearTimeout(timeout);
@@ -53,7 +68,7 @@ const fetchJson = async (url: string, options?: RequestInit) => {
 export const fetchSuggestions = async (query: string): Promise<Anime[]> => {
   console.log(`Fetching suggestions for ${query}`);
   try {
-    const data = await fetchJson(`${JIKAN_URL}/search/anime?q=${query}&limit=5`)
+    const data = await fetchJson(`${JIKAN_URL}/search/anime?q=${encodeURIComponent(query)}&limit=5`)
     return data['results'].map((anime: JikanResponse) => {
       return new Anime(anime.mal_id.toString(), anime.title)
     })
@@ -66,11 +81,13 @@ export const fetchDetails = async (anime: Anime) => {
   console.log(`Fetching details for ${anime.title}`);
   const [details, malScore] = await fetchMalScore(anime.id)
   const anilistScore = await fetchAnilistScore(anime.id)
+  const kitsuScore = await fetchKitsuScore(anime.title)
   return {
     details: details,
     scores: [
       malScore,
-      anilistScore
+      anilistScore,
+      kitsuScore
     ]
   }
 }
@@ -112,5 +129,36 @@ const fetchAnilistScore = async (id: string) => {
   } catch (error) {
     console.warn(`[AniList] ${error}`);
     return new Score('', 'AniList', -1);
+  }
+}
+
+const fetchKitsuScore = async (title: string) => {
+  const params = new URLSearchParams({
+    'filter[text]': title,
+    'fields[anime]': 'canonicalTitle,slug,averageRating,userCount'
+  })
+  try {
+    const response = await fetchJson(`${KITSU_URL}/anime?` + params, {
+      headers: {
+        'Content-Type': 'application/vnd.api+json',
+        'Accept': 'application/vnd.api+json'
+      }
+    }) as KitsuResponse
+    const data = response.data
+    const { bestMatchIndex } = stringSimilarity.findBestMatch(title,
+      data.map(results =>
+        results.attributes.canonicalTitle
+      )
+    )
+    const bestMatch = data[bestMatchIndex].attributes
+    return new Score(
+      `https://kitsu.io/anime/${bestMatch.slug}`,
+      'Kitsu',
+      parseInt(bestMatch.averageRating),
+      bestMatch.userCount
+    )
+  } catch (error) {
+    console.warn(`[Kitsu] ${error}`);
+    return new Score('', 'Kitsu', -1)
   }
 }

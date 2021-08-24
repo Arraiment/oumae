@@ -62,7 +62,10 @@ const App: Component = () => {
     <>
       <h1>Oumae</h1>
       {/* Search */}
-      <input type="text" onInput={(e) => handleSearch(e)} />
+      <input
+        id="search-input"
+        type="text"
+        onInput={(e) => handleSearch(e)} />
 
       {/* Autocomplete */}
       <div id="autocomplete-container">
@@ -75,7 +78,9 @@ const App: Component = () => {
           </Match>
           <Match when={state.results}>
             <Index each={state.results}>{result =>
-              <button onClick={selectAnime} id={result().id.toString()}>{result().title}</button>
+              <button onClick={selectAnime} id={result().id.toString()}>
+                {result().title}
+              </button>
             }</Index>
           </Match>
         </Switch>
