@@ -34,7 +34,7 @@ const App: Component = () => {
     }
   })
 
-  let timer: number
+  let timer: NodeJS.Timeout
   const handleSearch = ({ currentTarget }) => {
     // Only set loading if loading is not already true
     if (!state.loading) {

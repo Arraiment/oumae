@@ -1,5 +1,6 @@
 import { Anime, AnimeDetails, Score } from "./models"
 import stringSimilarity from 'string-similarity'
+import { Result } from "../../server/src/sources/models"
 
 const JIKAN_URL = "https://api.jikan.moe/v3"
 const ANILIST_URL = "https://graphql.anilist.co"
@@ -65,16 +66,18 @@ const fetchJson = async (url: string, options?: RequestInit) => {
 }
 
 // For use in Autocomplete component
-export const fetchSuggestions = async (query: string): Promise<Anime[]> => {
-  console.log(`Fetching suggestions for ${query}`);
-  try {
-    const data = await fetchJson(`${JIKAN_URL}/search/anime?q=${encodeURIComponent(query)}&limit=5`)
-    return data['results'].map((anime: JikanResponse) => {
-      return new Anime(anime.mal_id.toString(), anime.title)
+export const fetchSuggestions = async (query: string, type: string = 'anime'): Promise<Anime[]> => {
+  console.log("Fetching...")
+  const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}`)
+  if (response.ok) {
+    const data = await response.json()
+    return data.map((result: Result) => {
+      return new Anime(result.id.toString(), result.title)
     })
-  } catch (error) {
-    console.error(`[Fetch Suggestions] ${error}`)
+  } else {
+    throw 'Error fetching suggestions'
   }
+
 }
 
 export const fetchDetails = async (anime: Anime) => {

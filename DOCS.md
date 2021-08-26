@@ -27,3 +27,4 @@ This component accepts a instance of the `Anime` class as a prop, using the info
 These are things I feel the need to comment on during the development process:
 - This is a frontend framework, backend http request libraries are either suboptimal (axios) or non-functional (phin), prefer native Fetch Api
 - Solid's `useContext` and `createResource` features are wonky and produce unexpected results, such as losing all functionality after an error is encountered instead of recovering on the next change. I'll aim to phase these out and manually implement desired functionality.
+- In order to use node.js web scraping libraries, a server backend is necessary. I will migrate all API queries and web scraping to the backend. The solid frontend will fetch all the necessary info from the backend instead of directly from external sites.
