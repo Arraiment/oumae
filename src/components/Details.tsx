@@ -1,36 +1,55 @@
 import { Component, createEffect, For, Switch, Match } from "solid-js";
 import { fetchDetails } from "../utils/queries";
-import { Anime, AnimeDetails, Score } from "../utils/models";
 
 import ScoreDisplay from "./ScoreDisplay";
 import { createStore } from "solid-js/store";
+import { AnimeDetails, Details, MangaDetails, Media, NovelDetails, Score } from "../../server/src/sources/models";
 
 type Store = {
   loading: boolean
   error: boolean
-  details: AnimeDetails
+  anime?: AnimeDetails
+  manga?: MangaDetails
+  novel?: NovelDetails
   scores: Score[]
 }
 
-const Details: Component<{ anime: Anime }> = (props) => {
+const resetObj = {
+  scores: [],
+  anime: null,
+  manga: null,
+  novel: null
+}
+
+const Details: Component<{ media: Media }> = (props) => {
   const [state, setState] = createStore<Store>({
     loading: false,
     error: false,
-    details: null,
     scores: []
   });
 
   createEffect(() => {
-    if (props.anime) {
-      setState({ loading: true, error: false })
-      fetchDetails(props.anime).then(results => {
-        setState("details", results.details)
+    if (props.media) {
+      setState({ ...resetObj, loading: true, error: false })
+      fetchDetails(props.media).then(results => {
+        switch (props.media.type) {
+          case 'anime':
+            setState("anime", results.details)
+            break
+          case 'manga':
+            setState("manga", results.details)
+            break
+          case 'novel':
+            setState("novel", results.details)
+            break
+          default:
+            break
+        }
         setState("scores", results.scores)
       })
         .catch(() => {
           setState({
-            details: null,
-            scores: [],
+            ...resetObj,
             error: true
           })
         })
@@ -46,10 +65,22 @@ const Details: Component<{ anime: Anime }> = (props) => {
       <Match when={state.loading}>
         <p>Loading...</p>
       </Match>
-      <Match when={state.details && state.scores}>
+      <Match when={state.scores}>
         <div id="details">
-          <h1>{state.details.title}</h1>
-          <h3>{state.details.type} | {state.details.episodes}</h3>
+          <Switch>
+            <Match when={state.anime}>
+              <h1>{state.anime.title} ({state.anime.year})</h1>
+              <h3>{state.anime.mediaType} | {state.anime.episodes}</h3>
+            </Match>
+            <Match when={state.manga}>
+              <h1>{state.manga.title}</h1>
+              <h3>{state.manga.mediaType} | {state.manga.chapters}</h3>
+            </Match>
+            <Match when={state.novel}>
+              <h1>{state.novel.title}</h1>
+              <h3>{state.novel.mediaType} | {state.novel.chapters}</h3>
+            </Match>
+          </Switch>
         </div>
         <div id="scores">
           <For each={state.scores}>{score =>

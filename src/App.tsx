@@ -5,13 +5,14 @@ import { Anime } from "./utils/models";
 import { fetchSuggestions } from "./utils/queries";
 
 import Details from "./components/Details";
+import { Media } from "../server/src/sources/models";
 
 type Store = {
   loading: boolean
   error: boolean
   query: string
-  results: Anime[]
-  selected: Anime
+  results: Media[]
+  selected: Media
 }
 
 const App: Component = () => {
@@ -43,7 +44,7 @@ const App: Component = () => {
     setState("error", false)
     const input = currentTarget.value.trim()
     // Stops previous setTimeout if it has not executed
-    // Currently only sets query after user stops for 2 sec
+    // Currently sets query after user stops for 1 sec
     clearTimeout(timer)
     timer = setTimeout(() => {
       if (input && input !== state.query && input.length > 3) {
@@ -52,10 +53,14 @@ const App: Component = () => {
     }, 1000);
   }
 
-  const selectAnime = ({ currentTarget }) => {
-    setState("selected",
-      new Anime(currentTarget.id, currentTarget.textContent)
-    )
+  const selectOption = ({ currentTarget }) => {
+    let option: Media
+    try {
+      option = JSON.parse(currentTarget.dataJson)
+    } catch (error) {
+      console.error('Error parsing option json')
+    }
+    setState("selected", option)
   }
 
   return (
@@ -78,7 +83,7 @@ const App: Component = () => {
           </Match>
           <Match when={state.results}>
             <Index each={state.results}>{result =>
-              <button onClick={selectAnime} id={result().id.toString()}>
+              <button onClick={selectOption} data-json={result()}>
                 {result().title}
               </button>
             }</Index>
@@ -88,7 +93,7 @@ const App: Component = () => {
 
       {/* Details */}
       <div id="details-container">
-        <Details anime={state.selected} />
+        <Details media={state.selected} />
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 import phin from 'phin'
 import { queryMalApi } from './sources/mal'
-import { Details, DetailsApiResponse, Media, MediaType, Score } from './sources/models'
+import { AnimeDetails, DetailsApiResponse, MangaDetails, Media, MediaType, Score } from './sources/models'
 
 export interface JikanResult {
   mal_id: number
@@ -48,19 +48,19 @@ export const fetchSuggestions = async (query: string, type: MediaType): Promise<
 }
 
 export const fetchDetails = async (media: Media): Promise<DetailsApiResponse> => {
-  let responseDetails: Details
+  let responseDetails: AnimeDetails | MangaDetails
   const responseScores: Score[] = []
   
   switch (media.type) {
     case 'anime': {
       const [details, malScore] = await queryMalApi(media.id, media.type)
-      responseDetails = details
+      responseDetails = details as AnimeDetails
       responseScores.push(malScore)
       break
     }
     case 'manga': {
       const [details, malScore] = await queryMalApi(media.id, media.type)
-      responseDetails = details
+      responseDetails = details as MangaDetails
       responseScores.push(malScore)
       break
     }

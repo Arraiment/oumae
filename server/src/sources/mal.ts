@@ -21,6 +21,7 @@ export const queryMalApi = async (id: number, type: MediaType): Promise<[Details
 
       const details: AnimeDetails = {
         mediaType: result.type,
+        title: result.title,
         episodes: result.episodes,
         year: result.aired.prop.from.year
       }

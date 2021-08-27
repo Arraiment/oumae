@@ -8,6 +8,7 @@ export interface Media {
 
 export interface Details {
   readonly mediaType: string
+  readonly title: string
 }
 
 export interface AnimeDetails extends Details {
@@ -31,6 +32,6 @@ export interface Score {
 }
 
 export interface DetailsApiResponse {
-  readonly details: Details
+  readonly details: AnimeDetails | MangaDetails | NovelDetails
   readonly scores: Score[]
 }
