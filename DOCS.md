@@ -12,7 +12,7 @@ The flow is as follows:
 
 ### Autocomplete
 This section is responsible for displaying suggested anime titles based on the user's input.
-1. When the `query` signal is updated, `createEffect` watcher calls `fetchSuggestions` 
+1. When the `query` signal is updated, `createEffect` watcher calls `fetchSuggestions` which queries the backend
 2. Calls Jikan's API
    - If request is successful, updates `results`
    - If request timeout or is unsuccessful, sets `error` state to `true`
@@ -22,6 +22,30 @@ This section is responsible for displaying suggested anime titles based on the u
 This component accepts a instance of the `Anime` class as a prop, using the info provided to fetch scores for the anime from a variety of sources.
 1. When the `props.anime` signal is updated, `createEffect` watcher calls `fetchDetails` 
 2. Calls APIs or scrapes websites, req/res follows the same flow as Autocomplete
+
+### API Endpoints
+Request: GET('/api/search')
+
+Necessary url queries: 
+- q: `string`
+  
+   The query, referring to the name of the media
+
+- type: `"anime"` |  `"manga"` |  `"novel"`
+  
+   The type of media
+
+Sucessful response: Media[] consisting of 5 elements
+
+
+
+Request: POST('/api/details')
+
+Request body: {
+   media: Media
+}
+
+Sucessful response: DetailsApiResponse
 
 ### Development notes
 These are things I feel the need to comment on during the development process:
