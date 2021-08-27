@@ -13,7 +13,7 @@ interface KitsuResponse {
   }[]
 }
 
-const queryKitsuApi = async (title: string): Promise<Score> => {
+export const queryKitsuApi = async (title: string): Promise<Score> => {
   const params = new URLSearchParams({
     'filter[text]': title,
     'fields[anime]': 'canonicalTitle,slug,averageRating,userCount'
