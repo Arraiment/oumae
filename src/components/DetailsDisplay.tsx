@@ -31,6 +31,7 @@ const DetailsDisplay: Component<{ media: Media }> = (props) => {
 
   createEffect(() => {
     if (props.media) {
+      console.time('Details')
       setState({ ...resetObj, loading: true, error: false })
       fetchDetails(props.media).then(results => {
         switch (props.media.type) {
@@ -54,7 +55,10 @@ const DetailsDisplay: Component<{ media: Media }> = (props) => {
             error: true
           })
         })
-        .finally(() => setState("loading", false))
+        .finally(() => {
+          console.timeEnd('Details')
+          setState("loading", false)
+        })
     }
   })
 

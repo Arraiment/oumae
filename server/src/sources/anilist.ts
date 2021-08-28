@@ -1,5 +1,5 @@
 import phin from "phin"
-import { MediaType, Score } from "./models"
+import { Media, Score } from "./models"
 
 interface AniListResponse {
   data: {
@@ -14,9 +14,10 @@ interface AniListResponse {
   }
 }
 
-export const queryAnilistApi = async (id: string, type: MediaType): Promise<Score> => {
+export const queryAnilistApi = async ({ id, type }: Media): Promise<Score> => {
+
   const query = `{
-    Media (idMal: ${id}, type: ${type.toUpperCase()}) {
+    Media(idMal: ${id}, type: ${type.toUpperCase()}) {
       url: siteUrl
       title {
         english
@@ -24,7 +25,7 @@ export const queryAnilistApi = async (id: string, type: MediaType): Promise<Scor
       score: averageScore
       scored_by: popularity
     }
-  }`
+  }`  
   try {
 
     const response = await phin({
@@ -34,7 +35,7 @@ export const queryAnilistApi = async (id: string, type: MediaType): Promise<Scor
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({ query: query }),
+      data: JSON.stringify({ query: query }),
       timeout: 8000,
       parse: 'json'
     })
@@ -52,7 +53,7 @@ export const queryAnilistApi = async (id: string, type: MediaType): Promise<Scor
       }
 
     } else {
-      throw `Request failed: ${response.statusCode}`
+      throw `Request failed: ${response.statusCode}\n${JSON.stringify(response.body)}`
     }
 
   } catch (error) {

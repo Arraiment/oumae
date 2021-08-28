@@ -28,10 +28,14 @@ const App: Component = () => {
     // Prevents calling fetch on inital load
     // as query is initialised as empty string
     if (state.query) {
+      console.time('Suggestions')
       fetchSuggestions(state.query).then(results => {
         setState("results", results)
       }).catch(error => setState("error", true))
-        .finally(() => setState("loading", false))
+        .finally(() => {
+          console.timeEnd('Suggestions')
+          setState("loading", false)
+        })
     }
   })
 

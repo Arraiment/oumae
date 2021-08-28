@@ -1,6 +1,9 @@
 import phin from 'phin'
+import { queryAnilistApi } from './sources/anilist'
+import { queryKitsuApi } from './sources/kitsu'
 import { queryMalApi } from './sources/mal'
 import { AnimeDetails, DetailsApiResponse, MangaDetails, Media, MediaType, Score } from './sources/models'
+import { scrapeRal } from './sources/ral'
 
 export interface JikanResult {
   mal_id: number
@@ -39,18 +42,29 @@ export const fetchSuggestions = async (query: string, type: MediaType): Promise<
 }
 
 export const fetchDetails = async (media: Media): Promise<DetailsApiResponse> => {
+  
   let responseDetails: AnimeDetails | MangaDetails
   const responseScores: Score[] = []
   
   switch (media.type) {
     case 'anime': {
-      const [details, malScore] = await queryMalApi(media.id, media.type)
+      const [
+        [details, malScore],
+        anilistScore,
+        kitsuScore,
+        ralScore
+      ] = await Promise.all([
+        queryMalApi(media),
+        queryAnilistApi(media),
+        queryKitsuApi(media),
+        scrapeRal(media.id)
+      ])
       responseDetails = details as AnimeDetails
-      responseScores.push(malScore)
+      responseScores.push(malScore, anilistScore, kitsuScore, ralScore)
       break
     }
     case 'manga': {
-      const [details, malScore] = await queryMalApi(media.id, media.type)
+      const [details, malScore] = await queryMalApi(media)
       responseDetails = details as MangaDetails
       responseScores.push(malScore)
       break
@@ -63,7 +77,6 @@ export const fetchDetails = async (media: Media): Promise<DetailsApiResponse> =>
       throw 'Unexpected media type'
     }
   }
-
   return {
     details: responseDetails,
     scores: responseScores

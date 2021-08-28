@@ -1,6 +1,6 @@
 import phin from "phin"
 import { JikanResult } from "../queries"
-import { AnimeDetails, Details, MediaType, Score } from "./models"
+import { AnimeDetails, Details, Media, Score } from "./models"
 
 interface JikanAnime extends JikanResult {
   type: string
@@ -18,17 +18,14 @@ interface JikanAnime extends JikanResult {
 
 // }
 
-export const queryMalApi = async (id: number, type: MediaType): Promise<[Details, Score]> => {
-  console.log(`Fetching details from Jikan`)
+export const queryMalApi = async ({ id, type }: Media): Promise<[Details, Score]> => {
 
-  // Send request
   const response = await phin({
     url: `https://api.jikan.moe/v3/${type}/${id}`,
     timeout: 8000,
     parse: 'json'
   })
 
-  // If success
   if (response.statusCode == 200) {
 
     if (type === 'anime') {
@@ -53,6 +50,6 @@ export const queryMalApi = async (id: number, type: MediaType): Promise<[Details
     }
 
   } else {
-    throw `[Fetch MAL] Request failed: ${response.statusCode}`
+    throw `[MAL] Request failed: ${response.statusCode}`
   }
 }

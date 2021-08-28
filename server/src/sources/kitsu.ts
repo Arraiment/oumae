@@ -1,6 +1,6 @@
 import phin from "phin"
 import stringSimilarity from "string-similarity"
-import { Score } from "./models"
+import { Media, Score } from "./models"
 
 interface KitsuResponse {
   data: {
@@ -13,7 +13,7 @@ interface KitsuResponse {
   }[]
 }
 
-export const queryKitsuApi = async (title: string): Promise<Score> => {
+export const queryKitsuApi = async ({ title, type }: Media): Promise<Score> => {
   const params = new URLSearchParams({
     'filter[text]': title,
     'fields[anime]': 'canonicalTitle,slug,averageRating,userCount'
