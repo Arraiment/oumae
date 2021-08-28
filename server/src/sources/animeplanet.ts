@@ -52,9 +52,7 @@ export const scrapeAnimePlanet = async ({ title, type }: Media): Promise<Score> 
       if (!match) {
         throw `Invalid score format`
       }
-
-      console.log(match);
-
+      
       return {
         url: bestMatchUrl,
         source: 'AnimePlanet',
