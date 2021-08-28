@@ -1,5 +1,6 @@
 import phin from 'phin'
 import { queryAnilistApi } from './sources/anilist'
+import { scrapeAnimePlanet } from './sources/animeplanet'
 import { queryKitsuApi } from './sources/kitsu'
 import { queryMalApi } from './sources/mal'
 import { AnimeDetails, DetailsApiResponse, MangaDetails, Media, MediaType, Score } from './sources/models'
@@ -48,19 +49,16 @@ export const fetchDetails = async (media: Media): Promise<DetailsApiResponse> =>
   
   switch (media.type) {
     case 'anime': {
-      const [
-        [details, malScore],
-        anilistScore,
-        kitsuScore,
-        ralScore
-      ] = await Promise.all([
+      const results = await Promise.all([
         queryMalApi(media),
         queryAnilistApi(media),
         queryKitsuApi(media),
-        scrapeRal(media.id)
+        scrapeRal(media.id),
+        scrapeAnimePlanet(media)
       ])
-      responseDetails = details as AnimeDetails
-      responseScores.push(malScore, anilistScore, kitsuScore, ralScore)
+      const scores = results.flat().slice(1) as Score[]
+      responseDetails = results[0][0] as AnimeDetails
+      responseScores.push(...scores)
       break
     }
     case 'manga': {
