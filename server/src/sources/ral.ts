@@ -29,7 +29,7 @@ export const scrapeRal = async (id: number): Promise<Score> => {
       return {
         url: url,
         source: 'RedditAnimeList',
-        value: parseFloat(score),
+        value: parseFloat(score) * 10,
         numScored: voters ? parseInt(voters) : undefined
       }
 

@@ -40,7 +40,7 @@ export const queryMalApi = async ({ id, type }: Media): Promise<[Details, Score]
       const score: Score = {
         url: result.url,
         source: 'MyAnimeList',
-        value: result.score,
+        value: result.score * 10,
         numScored: result.scored_by
       }
       return [details, score]
