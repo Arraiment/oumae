@@ -53,11 +53,13 @@ export const scrapeAnimePlanet = async ({ title, type }: Media): Promise<Score> 
         throw `Invalid score format`
       }
 
+      console.log(match);
+
       return {
         url: bestMatchUrl,
         source: 'AnimePlanet',
-        value: parseFloat(match[0]) * 20,
-        numScored: parseInt(match[1].replace(',', ''))
+        value: parseFloat(match[1]) * 20,
+        numScored: parseInt(match[2].replace(',', ''))
       }
 
     } else {
