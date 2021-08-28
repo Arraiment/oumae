@@ -2,6 +2,22 @@ import phin from "phin"
 import { JikanResult } from "../queries"
 import { AnimeDetails, Details, MediaType, Score } from "./models"
 
+interface JikanAnime extends JikanResult {
+  type: string
+  episodes: number
+  aired: {
+    prop: {
+      from: {
+        year: number
+      }
+    }
+  }
+}
+
+// interface JikanManga extends JikanResult {
+
+// }
+
 export const queryMalApi = async (id: number, type: MediaType): Promise<[Details, Score]> => {
   console.log(`Fetching details from Jikan`)
 
@@ -15,9 +31,8 @@ export const queryMalApi = async (id: number, type: MediaType): Promise<[Details
   // If success
   if (response.statusCode == 200) {
 
-    const result = response.body as JikanResult
-
     if (type === 'anime') {
+      const result = response.body as JikanAnime
 
       const details: AnimeDetails = {
         mediaType: result.type,

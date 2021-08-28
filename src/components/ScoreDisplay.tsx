@@ -1,5 +1,6 @@
-import { Component, Show } from "solid-js";
-import { Score } from "../utils/models";
+import type { Component } from "solid-js";
+import { Show } from "solid-js";
+import type { Score } from "../../server/src/sources/models";
 
 const ScoreDisplay: Component<{ score: Score }> = (props: { score: Score }) => {
   return (

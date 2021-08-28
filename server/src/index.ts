@@ -6,6 +6,8 @@ import { Media, MediaType } from './sources/models';
 const app = express();
 const PORT = process.env.PORT || 8080
 
+app.use(express.json())
+
 app.get('/api/search', (req: Request, res: Response) => {
   const { q, type } = req.query
   const mediaTypes = ['anime', 'manga', 'novel']
@@ -30,9 +32,10 @@ app.get('/api/search', (req: Request, res: Response) => {
 })
 
 app.post('/api/details', (req: Request, res: Response) => {
+  console.log(req.body)
   const media: Media = req.body
   fetchDetails(media).then(results => {
-    res.status(200).send(results)
+    res.status(200).json(results)
   }).catch(error => 
     res.status(500).send(`Failed to fetch media\n${error}`)
   )

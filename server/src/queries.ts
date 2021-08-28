@@ -6,16 +6,7 @@ export interface JikanResult {
   mal_id: number
   title: string
   url: string
-  type: string
-  episodes: number
-  aired: {
-    prop: {
-      from: {
-        year: number
-      }
-    }
-  }
-  score: number,
+  score: number
   scored_by: number
 }
 

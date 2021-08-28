@@ -15,10 +15,14 @@ export const fetchSuggestions =
   }
 
 export const fetchDetails = async (media: Media) => {
-  console.log(`Fetching details...`)
+  console.log(`Fetching details...` + JSON.stringify(media))
 
   const response = await fetch(`/api/details`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
     body: JSON.stringify(media)
   })
 

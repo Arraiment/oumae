@@ -1,9 +1,10 @@
-import { Component, createEffect, For, Switch, Match } from "solid-js";
+import type { Component } from "solid-js";
+import { createEffect, For, Switch, Match } from "solid-js";
 import { fetchDetails } from "../utils/queries";
 
 import ScoreDisplay from "./ScoreDisplay";
 import { createStore } from "solid-js/store";
-import { AnimeDetails, Details, MangaDetails, Media, NovelDetails, Score } from "../../server/src/sources/models";
+import type { AnimeDetails, MangaDetails, Media, NovelDetails, Score } from "../../server/src/sources/models";
 
 type Store = {
   loading: boolean
@@ -21,7 +22,7 @@ const resetObj = {
   novel: null
 }
 
-const Details: Component<{ media: Media }> = (props) => {
+const DetailsDisplay: Component<{ media: Media }> = (props) => {
   const [state, setState] = createStore<Store>({
     loading: false,
     error: false,
@@ -92,4 +93,4 @@ const Details: Component<{ media: Media }> = (props) => {
   );
 };
 
-export default Details;
+export default DetailsDisplay

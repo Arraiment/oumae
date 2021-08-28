@@ -1,11 +1,11 @@
-import { Component, Index, Switch, Match, createEffect } from "solid-js";
+import type { Component } from "solid-js";
+import { Index, Switch, Match, createEffect } from "solid-js";
 import { createStore } from "solid-js/store"
 
-import { Anime } from "./utils/models";
 import { fetchSuggestions } from "./utils/queries";
 
-import Details from "./components/Details";
-import { Media } from "../server/src/sources/models";
+import DetailsDisplay from "./components/DetailsDisplay";
+import type { Media } from "../server/src/sources/models";
 
 type Store = {
   loading: boolean
@@ -56,9 +56,9 @@ const App: Component = () => {
   const selectOption = ({ currentTarget }) => {
     let option: Media
     try {
-      option = JSON.parse(currentTarget.dataJson)
+      option = JSON.parse(currentTarget.getAttribute("data-json"))
     } catch (error) {
-      console.error('Error parsing option json')
+      console.error('Error parsing option json: ' + error)
     }
     setState("selected", option)
   }
@@ -83,7 +83,9 @@ const App: Component = () => {
           </Match>
           <Match when={state.results}>
             <Index each={state.results}>{result =>
-              <button onClick={selectOption} data-json={result()}>
+              <button 
+                onClick={selectOption}
+                data-json={JSON.stringify(result())}>
                 {result().title}
               </button>
             }</Index>
@@ -93,7 +95,7 @@ const App: Component = () => {
 
       {/* Details */}
       <div id="details-container">
-        <Details media={state.selected} />
+        <DetailsDisplay media={state.selected} />
       </div>
     </>
   );
