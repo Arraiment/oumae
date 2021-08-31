@@ -1,11 +1,13 @@
 import { DetailsApiResponse, Media } from "../../server/src/sources/models"
 
 export const fetchSuggestions =
-  async (query: string, type: string = 'anime') => {
+  async (query: string, type: string) => {
     console.log("Fetching suggestions...")
-    
-    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&type=${type}`)
-    
+
+    const response = await fetch(
+      `/api/search?q=${encodeURIComponent(query)}&type=${type}`
+    )
+
     if (response.ok) {
       return await response.json() as Media[]
     } else {
