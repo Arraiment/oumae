@@ -21,7 +21,7 @@ export const queryKitsuApi = async ({ title, type }: Media): Promise<Score> => {
   try {
 
     const response = await phin({
-      url: `https://kitsu.io/api/edge/anime?${params}`,
+      url: `https://kitsu.io/api/edge/${type}?${params}`,
       headers: {
         'Content-Type': 'application/vnd.api+json',
         'Accept': 'application/vnd.api+json'

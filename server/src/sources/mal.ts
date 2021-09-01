@@ -1,6 +1,6 @@
 import phin from "phin"
 import { JikanResult } from "../queries"
-import { AnimeDetails, Details, Media, Score } from "./models"
+import { AnimeDetails, Details, MangaDetails, Media, Score } from "./models"
 
 interface JikanAnime extends JikanResult {
   type: string
@@ -14,9 +14,11 @@ interface JikanAnime extends JikanResult {
   }
 }
 
-// interface JikanManga extends JikanResult {
-
-// }
+interface JikanManga extends JikanResult {
+  type: string
+  chapters: number
+  publishing: boolean
+}
 
 export const queryMalApi = async ({ id, type }: Media): Promise<[Details, Score]> => {
 
@@ -36,6 +38,23 @@ export const queryMalApi = async ({ id, type }: Media): Promise<[Details, Score]
         title: result.title,
         episodes: result.episodes,
         year: result.aired.prop.from.year
+      }
+      const score: Score = {
+        url: result.url,
+        source: 'MyAnimeList',
+        value: result.score * 10,
+        numScored: result.scored_by
+      }
+      return [details, score]
+
+    } else if (type === 'manga') {
+      const result = response.body as JikanManga
+
+      const details: MangaDetails = {
+        mediaType: result.type,
+        title: result.title,
+        chapters: result.chapters,
+        publishing: result.publishing
       }
       const score: Score = {
         url: result.url,

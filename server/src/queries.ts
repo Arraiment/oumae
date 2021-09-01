@@ -62,9 +62,14 @@ export const fetchDetails = async (media: Media): Promise<DetailsApiResponse> =>
       break
     }
     case 'manga': {
-      const [details, malScore] = await queryMalApi(media)
-      responseDetails = details as MangaDetails
-      responseScores.push(malScore)
+      const results = await Promise.all([
+        queryMalApi(media),
+        queryAnilistApi(media),
+        queryKitsuApi(media)
+      ])
+      const scores = results.flat().slice(1) as Score[]
+      responseDetails = results[0][0] as MangaDetails
+      responseScores.push(...scores)
       break
     }
     // TODO: novels

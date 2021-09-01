@@ -18,6 +18,7 @@ export interface AnimeDetails extends Details {
 
 export interface MangaDetails extends Details {
   readonly chapters: number
+  readonly publishing: boolean
 }
 
 export interface NovelDetails extends Details {

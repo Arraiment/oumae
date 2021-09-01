@@ -42,7 +42,7 @@ export const queryAnilistApi = async ({ id, type }: Media): Promise<Score> => {
 
     if (response.statusCode == 200) {
 
-      const json = response.body as unknown as AniListResponse
+      const json = response.body as AniListResponse
       const data = json.data.Media
       
       return {
