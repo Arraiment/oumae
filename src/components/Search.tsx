@@ -26,20 +26,17 @@ const Search: Component = () => {
 
   return (
     <div id="search-bar">
-      <input type="radio" id="anime" name="type" checked />
-      <input type="radio" id="manga" name="type" />
-      <input type="radio" id="novel" name="type" />
-      <label for="anime">Anime</label>
-      <label for="manga">Manga</label>
-      <label for="novel">Novel</label>
-      <div id="search-background">
-        <input
-          type="text"
-          id="search-input"
-          onInput={handleSearch}
-          onFocus={searchFocused}
-          placeholder="Search titles..." />
+      <div class="radio">
+        <input type="radio" value="Anime" id="anime" name="type" checked />
+        <input type="radio" value="Manga" id="manga" name="type" />
+        <input type="radio" value="Novel" id="novel" name="type" />
       </div>
+      <input
+        type="text"
+        id="search-input"
+        onInput={handleSearch}
+        onFocus={searchFocused}
+        placeholder="Search titles..." />
     </div>
   );
 };
