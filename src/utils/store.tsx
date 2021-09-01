@@ -31,8 +31,8 @@ export function AppStoreProvider(props: { children: any }) {
       {
         search(query: string, type: string) {
           console.log(query + type);
-          setState('autocomplete', 'query', query);
           setState('autocomplete', 'type', type);
+          setState('autocomplete', 'query', query);
         },
         select(media: Media) {
           setState('media', media)

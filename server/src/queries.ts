@@ -3,6 +3,7 @@ import { queryAnilistApi } from './sources/anilist'
 import { scrapeAnimePlanet } from './sources/animeplanet'
 import { queryKitsuApi } from './sources/kitsu'
 import { queryMalApi } from './sources/mal'
+import { scrapeMangaUpdates } from './sources/mangaupdates'
 import { AnimeDetails, DetailsApiResponse, MangaDetails, Media, MediaType, Score } from './sources/models'
 import { scrapeRal } from './sources/ral'
 
@@ -65,7 +66,8 @@ export const fetchDetails = async (media: Media): Promise<DetailsApiResponse> =>
       const results = await Promise.all([
         queryMalApi(media),
         queryAnilistApi(media),
-        queryKitsuApi(media)
+        queryKitsuApi(media),
+        scrapeMangaUpdates(media.title)
       ])
       const scores = results.flat().slice(1) as Score[]
       responseDetails = results[0][0] as MangaDetails

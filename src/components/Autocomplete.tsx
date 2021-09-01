@@ -16,6 +16,8 @@ const Autocomplete: Component = () => {
     // as query is initialised as empty string
     if (state.autocomplete.query) {
       console.time('Suggestions')
+      setError(false)
+      setResults()
       setLoading(true)
       fetchSuggestions(
         state.autocomplete.query,
