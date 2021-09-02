@@ -1,4 +1,4 @@
-export type MediaType = 'anime' | 'manga' | 'novel'
+export type MediaType = 'anime' | 'manga'
 
 export interface Media {
   readonly id: number
@@ -21,10 +21,6 @@ export interface MangaDetails extends Details {
   readonly publishing: boolean
 }
 
-export interface NovelDetails extends Details {
-  readonly chapters: number
-}
-
 export interface Score {
   readonly url: string
   readonly source: string
@@ -33,6 +29,6 @@ export interface Score {
 }
 
 export interface DetailsApiResponse {
-  readonly details: AnimeDetails | MangaDetails | NovelDetails
+  readonly details: AnimeDetails | MangaDetails
   readonly scores: Score[]
 }

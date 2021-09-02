@@ -10,35 +10,29 @@ app.use(express.json())
 
 app.get('/api/search', (req: Request, res: Response) => {
   const { q, type } = req.query
-  const mediaTypes = ['anime', 'manga', 'novel']
 
   if (typeof q === 'string') {
     // Checks if query value of "type" is valid MediaType
-    if (mediaTypes.some(t => type === t)) {
-      const mediaType = type as MediaType
+    if (type === 'anime' || type === 'manga') {
+      const mediaType: MediaType = type
       // Query should already be uri encoded on the client-side
-      fetchSuggestions(q, mediaType).then(results => {
-        res.status(200).json(results)
-      }).catch(error => {
-        res.status(500).send(`Failed to fetch suggestions\n${error}`)
-      })
-
+      fetchSuggestions(q, mediaType)
+        .then(results => res.status(200).json(results))
+        .catch(error => res.status(500).send(`Failed to fetch suggestions\n${error}`))
     } else {
       res.status(400).send('Invalid media type')
     }
   } else {
-    res.status(400).send('Invalid query type')
+    res.status(400).send('Invalid query format')
   }
 })
 
 app.post('/api/details', (req: Request, res: Response) => {
   console.log(req.body)
   const media: Media = req.body
-  fetchDetails(media).then(results => {
-    res.status(200).json(results)
-  }).catch(error => 
-    res.status(500).send(`Failed to fetch media\n${error}`)
-  )
+  fetchDetails(media)
+    .then(results => res.status(200).json(results))
+    .catch(error => res.status(500).send(`Failed to fetch media\n${error}`))
 })
 
 app.listen(PORT, () => {

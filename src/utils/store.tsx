@@ -4,10 +4,8 @@ import type { Media } from "../../server/src/sources/models";
 
 type AppStore = [
   {
-    autocomplete: {
-      query: string,
-      type: string
-    },
+    query: string,
+    queryType: string,
     media: Media
   },
   {
@@ -20,19 +18,16 @@ const AppStoreContext = createContext<AppStore>();
 
 export function AppStoreProvider(props: { children: any }) {
   const [state, setState] = createStore({
-    autocomplete: {
-      query: '',
-      type: 'anime'
-    },
+    query: '',
+    queryType: 'anime',
     media: undefined
   }),
     store: AppStore = [
       state,
       {
         search(query: string, type: string) {
-          console.log(query + type);
-          setState('autocomplete', 'type', type);
-          setState('autocomplete', 'query', query);
+          setState('queryType', type)
+          setState('query', query)
         },
         select(media: Media) {
           setState('media', media)

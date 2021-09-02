@@ -74,10 +74,6 @@ export const fetchDetails = async (media: Media): Promise<DetailsApiResponse> =>
       responseScores.push(...scores)
       break
     }
-    // TODO: novels
-    // case 'novel': {
-    //   break
-    // }
     default: {
       throw 'Unexpected media type'
     }

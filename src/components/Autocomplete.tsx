@@ -1,36 +1,44 @@
 import type { Component } from "solid-js";
 import { createEffect, createSignal } from "solid-js";
 import { Switch, Match, Index } from "solid-js";
+import { createStore } from "solid-js/store";
 import type { Media } from "../../server/src/sources/models";
 import { fetchSuggestions } from "../utils/queries";
 import { useAppStore } from "../utils/store";
 
+type InternalStore = {
+  error: boolean,
+  loading: boolean,
+  results: Media[]
+}
+
 const Autocomplete: Component = () => {
-  const [state, { select }] = useAppStore();
-  const [error, setError] = createSignal(false)
-  const [loading, setLoading] = createSignal(false)
-  const [results, setResults] = createSignal<Media[]>()
+  const [state, { select }] = useAppStore()
+  const [internal, setInternal] = createStore<InternalStore>({
+    error: false,
+    loading: false,
+    results: []
+  })
 
   createEffect(() => {
     // Prevents calling fetch on inital load
     // as query is initialised as empty string
-    if (state.autocomplete.query) {
+    if (state.query) {
       console.time('Suggestions')
-      setError(false)
-      setResults()
-      setLoading(true)
-      fetchSuggestions(
-        state.autocomplete.query,
-        state.autocomplete.type
-        ).then(results => {
-          setResults(results)
-        }).catch(error => {
+      setInternal({
+        error: false,
+        loading: true,
+        results: []
+      })
+      fetchSuggestions(state.query, state.queryType)
+        .then(results => setInternal('results', results))
+        .catch(error => {
           console.error(error)
-          setError(true)
+          setInternal('error', true)
         })
         .finally(() => {
           console.timeEnd('Suggestions')
-          setLoading(false)
+          setInternal('loading', false)
         })
     }
   })
@@ -49,14 +57,14 @@ const Autocomplete: Component = () => {
   return (
     <div id="autocomplete-container">
       <Switch>
-        <Match when={error()}>
-          <p>No anime matches name "{state.autocomplete.query}"</p>
+        <Match when={internal.error}>
+          <p>No anime matches name "{state.query}"</p>
         </Match>
-        <Match when={loading()}>
-          <p>Searching for '{state.autocomplete.query}'...</p>
+        <Match when={internal.loading}>
+          <p>Searching for "{state.query}"...</p>
         </Match>
-        <Match when={results()}>
-          <Index each={results()}>{result =>
+        <Match when={internal.results.length > 0}>
+          <Index each={internal.results}>{result =>
             <button
               class="autocomplete-option"
               onClick={selectOption}

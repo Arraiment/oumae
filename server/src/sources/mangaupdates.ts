@@ -50,7 +50,7 @@ export const scrapeMangaUpdates = async (title: string): Promise<Score> => {
       
       return {
         url: bestMatchUrl,
-        source: 'AnimePlanet',
+        source: 'MangaUpdates',
         value: parseFloat(match[2]) * 10,
         numScored: parseInt(match[1])
       }

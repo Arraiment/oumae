@@ -29,7 +29,6 @@ const Search: Component = () => {
       <div class="radio">
         <input type="radio" value="Anime" id="anime" name="type" checked />
         <input type="radio" value="Manga" id="manga" name="type" />
-        <input type="radio" value="Novel" id="novel" name="type" />
       </div>
       <input
         type="text"
