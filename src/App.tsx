@@ -18,7 +18,6 @@ const App: Component = () => {
   
   return (
     <>
-      <h1>Oumae</h1>
       <Search />
       <div id="main-content">  
         <Autocomplete />
