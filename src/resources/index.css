@@ -1,7 +1,8 @@
 /* Global styles, reset, and variables */
 :root {
-  --text-large: 5rem;
-  --text-medium: 2rem;
+  --text-large: 2rem;
+  --text-medium: 1.5rem;
+  --text-small: 1rem;
 }
 
 * {
@@ -28,7 +29,7 @@ html {
 
 @media only screen and (max-width: 768px) {
   #root {
-    width: 100%;
+    width: 90%;
   }
 }
 
@@ -37,84 +38,78 @@ html {
 
 /* Header */
 
-#header-container {
-  position: relative;
+@media only screen and (max-width: 768px) {
+  #selection {
+    border-radius: 0 0 1rem 0;
+  }
 }
-
-#selection {
-  width: fit-content;
-  background-color: #EEB76B;
-  padding: 2rem;
-  border-radius: 0 0 1rem 1rem;
-}
-
-#selection h1 {
-  font-size: var(--text-large);
-}
-
 
 /* Toggle */
 
-#toggle {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  background-color: #121212;
-  border-radius: 1.2rem;
-  margin-bottom: 1rem;
-  border: 5px solid #121212;
-  cursor: pointer;
-}
-
-#slider {
-  position: absolute;
-  left: 0;
-  width: 48%;
-  height: 100%;
-  background-color: #EEB76B;
-  border-radius: 1rem;
-}
-
-.slider-left {
-  position: absolute;
-  left: 0;
-}
-
-.slider-right {
-  
-}
-
-.option {
-  flex-grow: 1;
+#radio {
   font-size: var(--text-medium);
-  z-index: 2;
-  margin: .25rem;
+  padding: .5rem 0;
+  display: flex;
+  justify-content: start;
+  align-items: flex-end;
+}
+
+#radio input {
+  font-size: var(--text-medium);
+  font-weight: 400;
+  color: white;
+	appearance: none;
+  position: relative;
+	outline: none;
+	cursor: pointer;
+  margin-left: .5rem;
+  transition: .4s;
+  color: grey;
+}
+
+#radio input:checked {
+  font-weight: 700;
+  color: white;
+}
+
+#radio input:checked::before {
+  text-decoration: solid underline #EEB76B 4px;
+}
+
+#radio input:before {
+	content: attr(value);
+  text-decoration: none;
+	display: inline-block;
+	text-align: center;
+	width: 100%;
 }
 
 /* Search bar */
 
 #search-bar {
-  position: absolute;
-  bottom: 0;
-  width: 80%;
+  width: 100%;
   border-radius: 1rem;
   background-color: white;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 7fr 1fr;
+  justify-items: center;
   align-items: center;
-  padding: .5rem 1rem;
-  margin-bottom: -2rem;
+  padding: .75rem 1.5rem;
 }
 
 #search-input {
-  width: 70%;
+  width: 100%;
   outline: none;
-  font-size: var(--text-medium);
+  font-size: var(--text-large);
 }
 
 #search-bar p {
   color: black;
+  cursor: pointer;
+}
+
+#search-bar p:hover {
+  color: grey;
 }
 
 /* Main content container */
@@ -122,6 +117,7 @@ html {
 #main-content {
   position: relative;
   width: 100%;
+  margin-top: .5rem;
 }
 
 /* Autocomplete dialog */
@@ -131,25 +127,38 @@ html {
   position: absolute;
   top: 0;
   display: none;
-  background-color: rgb(35, 35, 35);
-  border-radius: 0 0 1rem 1rem;
   z-index: 2;
+  font-size: var(--text-small);
+  background-color: #121212;
+}
+
+#autocomplete-container p {
+  padding-bottom: .5rem;
 }
 
 .autocomplete-option {
   width: 100%;
   background-color: transparent;
   color: white;
-  font-size: larger;
   padding: .5rem 1rem;
   text-align: left;
 }
 
 .autocomplete-option:hover {
-  background-color: rgba(255, 255, 255, .05);
+  background-color: #EEB76B;
+  border-radius: 1rem;
+  color: #121212;
 }
 
 /* Media details */
+.detail-title {
+  font-size: var(--text-large);
+}
+
+#details h3 {
+  font-size: var(--text-small);
+  font-weight: 400;
+}
 
 #scores {
   width: 100%;
@@ -173,24 +182,27 @@ html {
 }
 
 #scores .btn:hover {
-  background-color: rgba(255, 255, 255, .05);
-  box-shadow: rgba(255, 255, 255, 0.8) 3px 3px;
+  opacity: .6;
 }
 
 #scores .meter {
   position: absolute;
   left: 0;
   bottom: 0;
-  height: .5rem;
+  height: 100%;
   z-index: -1;
+}
+
+.btn {
+  font-size: var(--text-medium);
 }
 
 .btn p {
   display: flex;
   flex-direction: column;
   text-align: right;
-  font-size: x-large;
 }
 .btn p span {
-  font-size: medium;
+  font-size: var(--text-small);
+  color: white;
 }

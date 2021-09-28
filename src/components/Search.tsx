@@ -3,7 +3,7 @@ import { useAppStore } from "../utils/store";
 
 const Search: Component = () => {
   const [state, { search }] = useAppStore();
-  let slider;
+  let searchElement: HTMLInputElement
 
   let timer: NodeJS.Timeout
   const handleSearch = ({ currentTarget }) => {
@@ -24,29 +24,27 @@ const Search: Component = () => {
     document.getElementById('autocomplete-container').style.display = 'block'
   }
 
-  const toggleSelection = () => {
-    
+  const clearSearch = () => {
+    searchElement.value = ""
+    search("", "anime")
   }
-
 
   return (
     <div id="header-container">
-      <div id="selection">
-        <h1>Find</h1>
-        <div id="toggle" onClick={toggleSelection}>
-          <div id="slider" ref={slider}></div>
-          <div class="option">Anime</div>
-          <div class="option">Manga</div>
-        </div>
+      <div id="radio">
+          <h1>Find </h1>
+          <input type="radio" value="Anime" id="anime" name="type" checked />
+          <input type="radio" value="Manga" id="manga" name="type" />
       </div>
       <div id="search-bar">
         <input
           type="text"
+          ref={searchElement}
           id="search-input"
           onInput={handleSearch}
           onFocus={searchFocused}
-          placeholder="titles..." />
-        <p>Cancel</p>
+          placeholder="title..." />
+        <p onClick={clearSearch}>cancel</p>
       </div>
     </div>
   );

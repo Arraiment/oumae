@@ -7,6 +7,9 @@ import { createStore } from "solid-js/store";
 import type { AnimeDetails, MangaDetails, Score } from "../../server/src/sources/models";
 import { useAppStore } from "../utils/store";
 
+import "fitty";
+import fitty from "fitty";
+
 type InternalStore = {
   loading: boolean
   error: boolean
@@ -28,6 +31,7 @@ const DetailsDisplay: Component = () => {
     scores: []
   });
   const [state] = useAppStore()
+  let detailsElement: HTMLDivElement
 
   createEffect(() => {
     if (state.media) {
@@ -53,6 +57,11 @@ const DetailsDisplay: Component = () => {
         .finally(() => {
           console.timeEnd('Details')
           setInternal('loading', false)
+          fitty(".detail-title", { 
+            minSize: 20,
+            multiLine: true,
+            maxSize: 40 
+          })
         })
     }
   })
@@ -66,21 +75,21 @@ const DetailsDisplay: Component = () => {
         <p>Loading...</p>
       </Match>
       <Match when={internal.scores}>
-        <div id="details">
+        <div id="details" ref={detailsElement}>
           <Switch>
             <Match when={internal.anime}>
               <h1 class="detail-title">
-                {internal.anime.title} ({internal.anime.year})
+                {internal.anime.title}
               </h1>
-              <h3>{internal.anime.mediaType} | {internal.anime.episodes}</h3>
+              <h3>{internal.anime.year} {internal.anime.mediaType} | {internal.anime.episodes} episodes</h3>
             </Match>
             <Match when={internal.manga}>
               <h1 class="detail-title">
-                {internal.manga.title} ({internal.manga.publishing ? "Ongoing" : "Completed"})
+                {internal.manga.title}
               </h1>
               <h3>
-                {internal.manga.mediaType}
-                {internal.manga.publishing ? "" : `| ${internal.manga.chapters}`}
+                {internal.manga.publishing ? "Ongoing" : "Completed"} {internal.manga.mediaType}
+                {internal.manga.publishing ? "" : ` | ${internal.manga.chapters}`}
               </h3>
             </Match>
           </Switch>
