@@ -1,9 +1,6 @@
 import { DetailsApiResponse, Media } from "../../server/src/sources/models"
 
-export const fetchSuggestions =
-  async (query: string, type: string) => {
-    console.log("Fetching suggestions...")
-
+export const fetchSuggestions = async (query: string, type: string) => {
     const response = await fetch(
       `/api/search?q=${encodeURIComponent(query)}&type=${type}`
     )
@@ -13,12 +10,9 @@ export const fetchSuggestions =
     } else {
       throw 'Error fetching suggestions'
     }
-
   }
 
 export const fetchDetails = async (media: Media) => {
-  console.log('Fetching details...')
-
   const response = await fetch(`/api/details`, {
     method: 'POST',
     headers: {

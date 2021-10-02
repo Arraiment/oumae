@@ -1,5 +1,8 @@
 import express from 'express';
 import { Request, Response } from 'express';
+import compression from 'compression';
+import path from 'path';
+
 import { fetchDetails, fetchSuggestions } from './queries';
 import { Media, MediaType } from './sources/models';
 
@@ -7,6 +10,12 @@ const app = express();
 const PORT = process.env.PORT || 8080
 
 app.use(express.json())
+app.use(compression())
+
+if (process.env.NODE_ENV == 'production') {
+  app.use(express.static(path.join(__dirname, 'public')))
+  app.get('*', (_req, res) => res.sendFile(__dirname, '/public/index.html'))
+}
 
 app.get('/api/search', (req: Request, res: Response) => {
   const { q, type } = req.query
@@ -28,7 +37,6 @@ app.get('/api/search', (req: Request, res: Response) => {
 })
 
 app.post('/api/details', (req: Request, res: Response) => {
-  console.log(req.body)
   const media: Media = req.body
   fetchDetails(media)
     .then(results => res.status(200).json(results))

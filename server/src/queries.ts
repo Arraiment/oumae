@@ -48,6 +48,8 @@ export const fetchDetails = async (media: Media): Promise<DetailsApiResponse> =>
   
   let responseDetails: AnimeDetails | MangaDetails
   const responseScores: Score[] = []
+
+  console.log(`Fetching details for ${media.type}: [${media.id}] ${media.title}`)
   
   switch (media.type) {
     case 'anime': {

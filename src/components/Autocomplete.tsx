@@ -24,7 +24,6 @@ const Autocomplete: Component = () => {
     // Prevents calling fetch on inital load
     // as query is initialised as empty string
     if (state.query) {
-      console.time('Suggestions')
       setInternal({
         error: false,
         loading: true,
@@ -37,7 +36,6 @@ const Autocomplete: Component = () => {
           setInternal('error', true)
         })
         .finally(() => {
-          console.timeEnd('Suggestions')
           setInternal('loading', false)
         })
     }
@@ -51,7 +49,6 @@ const Autocomplete: Component = () => {
     } catch (error) {
       console.error('Error parsing option json: ' + error)
     }
-    console.log(option)
   }
 
   return (

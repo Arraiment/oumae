@@ -1,14 +1,13 @@
 import type { Component } from "solid-js";
 import { createEffect, For, Switch, Match } from "solid-js";
-import { fetchDetails } from "../utils/queries";
-
-import ScoreDisplay from "./ScoreDisplay";
 import { createStore } from "solid-js/store";
+import fitty from "fitty";
+
+import { fetchDetails } from "../utils/queries";
+import ScoreDisplay from "./ScoreDisplay";
 import type { AnimeDetails, MangaDetails, Score } from "../../server/src/sources/models";
 import { useAppStore } from "../utils/store";
 
-import "fitty";
-import fitty from "fitty";
 
 type InternalStore = {
   loading: boolean
@@ -35,7 +34,6 @@ const DetailsDisplay: Component = () => {
 
   createEffect(() => {
     if (state.media) {
-      console.time('Details')
       setInternal({ ...resetObj, loading: true, error: false })
       fetchDetails(state.media).then(results => {
         switch (state.media.type) {
@@ -55,12 +53,11 @@ const DetailsDisplay: Component = () => {
           setInternal('error', true)
         })
         .finally(() => {
-          console.timeEnd('Details')
           setInternal('loading', false)
-          fitty(".detail-title", { 
+          fitty(".detail-title", {
             minSize: 20,
             multiLine: true,
-            maxSize: 40 
+            maxSize: 40
           })
         })
     }

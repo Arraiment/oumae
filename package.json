@@ -1,9 +1,8 @@
 {
   "name": "oumae",
-  "version": "0.1.0",
-  "description": "Finds out what the internet thinks of the anime you want to watch",
+  "version": "1.0.0",
+  "description": "Anime and manga score aggregator",
   "scripts": {
-    "start": "vite",
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview"

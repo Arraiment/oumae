@@ -6,6 +6,7 @@ export default defineConfig({
   build: {
     target: "esnext",
     polyfillDynamicImport: false,
+    outDir: "./server/dist/public"
   },
   server: {
     proxy: {
